@@ -1,0 +1,26 @@
+-------------------------------------------------------------------------------
+Test set: scoops2Go.service.OrderServicePromotionTests
+-------------------------------------------------------------------------------
+Tests run: 15, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.024 s <<< FAILURE! -- in scoops2Go.service.OrderServicePromotionTests
+scoops2Go.service.OrderServicePromotionTests.megaMelt100_exactly100_shouldReject_butBugAllowsIt -- Time elapsed: 0.002 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: BUG: £100.00 should be rejected but source code allows it (>= instead of >) ==> Expected Scoops2Go.scoops2goapi.exception.InvalidPromotionException to be thrown, but nothing was thrown.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:39)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3153)
+	at scoops2Go.service.OrderServicePromotionTests.megaMelt100_exactly100_shouldReject_butBugAllowsIt(OrderServicePromotionTests.java:127)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+scoops2Go.service.OrderServicePromotionTests.frozen40_4treats_39_99_throwsException -- Time elapsed: 0.001 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Expected Scoops2Go.scoops2goapi.exception.InvalidPromotionException to be thrown, but nothing was thrown.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3128)
+	at scoops2Go.service.OrderServicePromotionTests.frozen40_4treats_39_99_throwsException(OrderServicePromotionTests.java:162)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+

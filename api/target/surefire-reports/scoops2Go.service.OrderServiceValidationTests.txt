@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: scoops2Go.service.OrderServiceValidationTests
+-------------------------------------------------------------------------------
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 s -- in scoops2Go.service.OrderServiceValidationTests
