@@ -1,0 +1,9 @@
+productId,expectedName,expectedType
+1,Waffle Cone,CONE
+2,Sugar Cone,CONE
+3,Cup,CONE
+4,Vanilla,FLAVOUR
+5,Chocolate,FLAVOUR
+6,Strawberry,FLAVOUR
+7,Mint Choc Chip,FLAVOUR
+8,Salted Caramel,FLAVOUR
