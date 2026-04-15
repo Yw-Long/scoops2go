@@ -16,22 +16,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.params.provider.CsvFileSource;
 
 /**
- * ParameterisedProductApiTests
+ * Product API parameterized integration tests.
+ * Data-driven tests for reduced duplication and better coverage.
  *
- * Parameterised integration tests for the Scoops2Go Product API.
- * Uses JUnit 5 @ParameterizedTest to validate multiple inputs in
- * a single, data-driven test method — reducing duplication and
- * increasing coverage efficiently.
+ * Seed product IDs:
+ * Cones: 1,2,3 | Flavours: 4-8 | Toppings:9-11
  *
- * Seed data product IDs (from SeedData.java):
- *   Cones   : 1=Waffle Cone, 2=Sugar Cone, 3=Cup
- *   Flavours: 4=Vanilla, 5=Chocolate, 6=Strawberry,
- *             7=Mint Choc Chip, 8=Salted Caramel
- *   Toppings: 9=Sprinkles, 10=Chocolate Chips,
- *             11=Caramel Sauce
- *
- * Covers: PB_TC_005 (extended), PB_TC_006 (extended)
- * REQ: REQ-SI-002
+ * Covers: PB_TC_005, PB_TC_006
  */
 @SpringBootTest(classes = Scoops2GoApiApplication.class)
 @AutoConfigureMockMvc
@@ -40,17 +31,7 @@ class ParameterisedProductApiTests {
     @Autowired
     private MockMvc mockMvc;
 
-    // ─────────────────────────────────────────────────────────────
-    // PB_TC_005 (Parameterised extension)
-    // REQ-SI-002 | GET /api/product/{productId} — all valid seed IDs
-    //
-    // Verifies that every seeded product returns HTTP 200 with the
-    // three core fields the implementation actually provides
-    // (productId, productName, price).
-    // Field-name mismatch (productType/productDesc vs type/description)
-    // is already captured in PB_D002; this test focuses on
-    // confirming the endpoint is reachable for ALL seed products.
-    // ─────────────────────────────────────────────────────────────
+    // PB_TC_005: Test all valid seed product IDs
     @ParameterizedTest(name = "Run [{index}] productId={0} ({1})")
     @CsvFileSource(resources = "/testdata/products.csv", numLinesToSkip = 1)
     @DisplayName("PB_TC_005 (param) – GET /api/product/{id} returns 200 for each seed product")
@@ -63,25 +44,17 @@ class ParameterisedProductApiTests {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                // productId must round-trip correctly
+                // Validate productId
                 .andExpect(jsonPath("$.productId").value(productId))
-                // productName must be a non-empty string
+                // Validate productName
                 .andExpect(jsonPath("$.productName", not(emptyOrNullString())))
-                // price must be present and positive (actual field name used by impl)
+                // Validate price exists
                 .andExpect(jsonPath("$.price", notNullValue()))
-                // type must be present (actual field name used by impl)
+                // Validate type exists
                 .andExpect(jsonPath("$.type", notNullValue()));
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // PB_TC_006 (Parameterised extension)
-    // REQ-SI-002 | GET /api/product/{productId} — boundary & invalid IDs
-    //
-    // Uses BVA (Boundary Value Analysis) and equivalence partitioning
-    // to verify the API returns a 4xx for a range of invalid IDs.
-    // Covers: zero, negatives, non-existent positive IDs, and
-    // an extremely large ID (Long boundary).
-    // ─────────────────────────────────────────────────────────────
+    // PB_TC_006: Test invalid and boundary IDs
     @ParameterizedTest(name = "Run [{index}] productId={0} — expect 4xx ({1})")
     @CsvSource({
             "0,       zero — invalid (no product has id=0)",
@@ -101,7 +74,7 @@ class ParameterisedProductApiTests {
 
         mockMvc.perform(get("/api/product/" + productId)
                         .accept(MediaType.APPLICATION_JSON))
-                // Must be a client error (4xx) — NOT a server error (5xx)
+                // Expect 4xx client error
                 .andExpect(status().is4xxClientError());
     }
 }

@@ -16,16 +16,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * OrderApiTests
- *
- * Seed data product IDs (from SeedData.java):
- *   Cones   : 1=Waffle Cone, 2=Sugar Cone, 3=Cup
- *   Flavours: 4=Vanilla, 5=Chocolate, 6=Strawberry,
- *             7=Mint Choc Chip, 8=Salted Caramel
- *   Toppings: 12=Sprinkles, 13=Chocolate Chips ...
- *
- * Covers: BK_TC_010, BK_TC_014A/B, BK_TC_015, BK_TC_017
- *         OT_TC_004, OT_TC_005
+ * Order API Integration Tests
+ * Covers: BK_TC_010, BK_TC_014A/B, BK_TC_015, BK_TC_017, OT_TC_004, OT_TC_005
  */
 @SpringBootTest(classes = Scoops2GoApiApplication.class)
 @AutoConfigureMockMvc
@@ -39,10 +31,10 @@ class OrderApiTests {
     @Autowired
     private ObjectMapper objectMapper;
 
-    /** Captured from setup, reused by OT_TC_004 / BK_TC_015 / BK_TC_017 */
+    // Shared order ID captured in setup, reused across tests
     private long sharedOrderId = -1;
 
-    // Valid treat: 1 Cone (Waffle Cone id=1) + 1 Flavour (Vanilla id=4)
+    // Valid treat: Waffle Cone (id=1) + Vanilla (id=4)
     private static final String VALID_ORDER_PAYLOAD = """
             {
               "basketItems": [
@@ -57,9 +49,7 @@ class OrderApiTests {
             }
             """;
 
-    // ─────────────────────────────────────────────────────────────
-    // SETUP  –  create one order; capture its orderId for later tests
-    // ─────────────────────────────────────────────────────────────
+    // Setup: create a shared order and capture its orderId
     @BeforeAll
     void setUp_createSharedTestOrder() throws Exception {
         MvcResult result = mockMvc.perform(post("/api/order")
@@ -83,12 +73,7 @@ class OrderApiTests {
         System.out.println("[Setup] sharedOrderId = " + sharedOrderId);
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // BK_TC_010  –  POST /api/order  (valid treat)
-    // REQ-SI-004
-    // Expected: 200/201, orderId>0, orderTotal>0, deliveryCost=2.50,
-    //           basketItems non-empty
-    // ─────────────────────────────────────────────────────────────
+    // BK_TC_010 – POST valid order returns 2xx with orderId, orderTotal, deliveryCost=2.50, non-empty basketItems
     @Test
     @Order(1)
     @DisplayName("BK_TC_010 – POST /api/order valid treat returns 2xx with required fields")
@@ -105,11 +90,7 @@ class OrderApiTests {
                 .andExpect(jsonPath("$.basketItems", not(empty())));
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // BK_TC_014A  –  POST /api/order  (empty products list)
-    // REQ-SI-004 / REQ-BR-001
-    // Expected: 4xx  (not 200 or 500)
-    // ─────────────────────────────────────────────────────────────
+    // BK_TC_014A – POST order with empty products list returns 4xx
     @Test
     @Order(2)
     @DisplayName("BK_TC_014A – POST /api/order empty products returns 4xx")
@@ -130,12 +111,7 @@ class OrderApiTests {
                 .andExpect(status().is4xxClientError());
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // BK_TC_014B  –  POST /api/order  (4 Flavours, exceeds max-3)
-    // REQ-SI-004 / REQ-BR-001
-    // Cone id=1 + Flavours id=4,5,6,7  (total 4 flavours)
-    // Expected: 4xx
-    // ─────────────────────────────────────────────────────────────
+    // BK_TC_014B – POST order with 4 flavours (exceeds max of 3) returns 4xx
     @Test
     @Order(3)
     @DisplayName("BK_TC_014B – POST /api/order 4 Flavours (max is 3) returns 4xx")
@@ -164,11 +140,7 @@ class OrderApiTests {
                 .andExpect(status().is4xxClientError());
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // OT_TC_004  –  GET /api/order/{orderId}  (valid id)
-    // REQ-FR-010 / REQ-SI-003
-    // Expected: 200, all required fields present
-    // ─────────────────────────────────────────────────────────────
+    // OT_TC_004 – GET existing order by ID returns 200 with all required fields
     @Test
     @Order(4)
     @DisplayName("OT_TC_004 – GET /api/order/{id} valid order returns 200 with all fields")
@@ -186,11 +158,7 @@ class OrderApiTests {
                 .andExpect(jsonPath("$.basketItems",  not(empty())));
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // OT_TC_005  –  GET /api/order/99999  (non-existent id)
-    // REQ-FR-010 / REQ-SI-003
-    // Expected: 404 with error message body
-    // ─────────────────────────────────────────────────────────────
+    // OT_TC_005 – GET non-existent order ID returns 404
     @Test
     @Order(5)
     @DisplayName("OT_TC_005 – GET /api/order/99999 returns 404 Not Found")
@@ -200,12 +168,7 @@ class OrderApiTests {
                 .andExpect(status().isNotFound());
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // BK_TC_015  –  PUT /api/order  (update basket)
-    // REQ-SI-005
-    // Update to: Cone id=2 (Sugar Cone) + Flavour id=5 (Chocolate)
-    // Expected: 200, orderId unchanged, basketItems updated, total recalculated
-    // ─────────────────────────────────────────────────────────────
+    // BK_TC_015 – PUT order updates basket and recalculates total, orderId unchanged
     @Test
     @Order(6)
     @DisplayName("BK_TC_015 – PUT /api/order updates basket and returns 200")
@@ -238,14 +201,7 @@ class OrderApiTests {
                 .andExpect(jsonPath("$.orderTotal",  greaterThan(0.0)));
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // BK_TC_017  –  POST checkout  (checkout an existing order)
-    // REQ-FR-008 / REQ-SI-004
-    //
-    // NOTE: /api/checkout returned HTTP 500 (no such endpoint).
-    //       Testing /api/order/{id}/checkout as the likely correct path.
-    //       Print statements capture the real response for defect evidence.
-    // ─────────────────────────────────────────────────────────────
+    // BK_TC_017 – POST checkout returns 200 with paid=true, transactionId, and matching orderId
     @Test
     @Order(7)
     @DisplayName("BK_TC_017 – POST /api/order/{id}/checkout returns 200 with CheckoutDTO")
@@ -260,7 +216,6 @@ class OrderApiTests {
                 }
                 """;
 
-        // Print response first so we can see the real structure regardless of pass/fail
         MvcResult probe = mockMvc.perform(post(checkoutUrl)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(paymentPayload)
@@ -271,7 +226,6 @@ class OrderApiTests {
         System.out.println("[BK_TC_017] Response: "
                 + probe.getResponse().getContentAsString());
 
-        // Now assert
         mockMvc.perform(post(checkoutUrl)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(paymentPayload)

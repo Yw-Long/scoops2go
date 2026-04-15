@@ -15,19 +15,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * PerformanceApiTests
- *
- * Automated performance tests for the Scoops2Go API.
+ * API performance tests.
  * Covers: PERF_TC_003
- *
- * REQ-PER-002: GET /api/product must respond within 500 ms
- * under normal operating conditions.
- *
- * Note: MockMvc in-process calls exclude network overhead and
- * measure pure server-side processing time — the most
- * deterministic measure available in a unit/integration test.
- * The 500 ms threshold should be trivially met; a breach would
- * indicate a serious server-side regression.
  */
 @SpringBootTest(classes = Scoops2GoApiApplication.class)
 @AutoConfigureMockMvc
@@ -36,21 +25,13 @@ class PerformanceApiTests {
     @Autowired
     private MockMvc mockMvc;
 
-    /** REQ-PER-002 response-time threshold in milliseconds */
+    // Response time threshold
     private static final long RESPONSE_TIME_THRESHOLD_MS = 500L;
 
-    /** Number of repeated calls — mirrors the 3-run Postman approach in the spec */
+    // Test run count
     private static final int REPEAT_COUNT = 3;
 
-    // ─────────────────────────────────────────────────────────────
-    // PERF_TC_003
-    // REQ-PER-002 | GET /api/product  –  response time ≤ 500 ms
-    //
-    // Executes REPEAT_COUNT requests and asserts that EVERY
-    // individual response falls within the threshold.
-    // Note: endpoint is /api/product (singular) — the plural
-    //       variant /api/products returns HTTP 500 (see PB_D001).
-    // ─────────────────────────────────────────────────────────────
+    // PERF_TC_003: Test response time ≤ 500ms
     @Test
     @DisplayName("PERF_TC_003 – GET /api/product responds within 500 ms (REQ-PER-002)")
     void PERF_TC_003_getProductList_respondsWithin500ms() throws Exception {
@@ -71,6 +52,7 @@ class PerformanceApiTests {
                     result.getResponse().getStatus(),
                     elapsed);
 
+            // Verify response time
             assertTrue(elapsed <= RESPONSE_TIME_THRESHOLD_MS,
                     String.format(
                             "Run %d exceeded threshold: %d ms > %d ms (REQ-PER-002)",

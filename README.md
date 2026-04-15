@@ -17,9 +17,11 @@ This repository contains a complete test suite for the Scoops2Go v1.0 system, co
 
 ## 1. Test Case Design Specification
 
-**File:** `Scoops2Go_TestCases.xlsx`  
-**Location:** Repository root
-
+**File:** `TestCases.xlsx`  
+**Location:**
+```
+Yunwei_Long_21906298/Defect_Report.docx
+```
 The spreadsheet documents 71 test cases across the following feature areas:
 
 | Prefix | Feature Area |
@@ -112,8 +114,11 @@ To reproduce: install Snyk CLI, set `$env:SNYK_TOKEN`, then run `snyk test` from
 
 ## 3. Defect Report
 
-**File:** `Defect_Report_Scoops2Go_FINAL_v2.docx`  
-**Location:** Repository root
+**File:** `Defect_Report.docx`  
+**Location:** 
+```
+Yunwei_Long_21906298/TestCases.xlsx
+```
 
 The report contains two sections:
 
@@ -148,7 +153,5 @@ scoops2go-main/
 │   │               └── products.csv   ← External test data (parameterised tests)
 │   └── snyk-sca-results.txt    ← SCA security scan output
 ├── app/                        ← Vue.js frontend
-├── Scoops2Go_TestCases.xlsx    ← Test case design specification
-├── Defect_Report_Scoops2Go_FINAL_v2.docx  ← Defect report
 └── README.md
 ```
