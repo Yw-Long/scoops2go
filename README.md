@@ -20,7 +20,7 @@ This repository contains a complete test suite for the Scoops2Go v1.0 system, co
 **File:** `TestCases.xlsx`  
 **Location:**
 ```
-Yunwei_Long_21906298/Defect_Report.docx
+Yunwei_Long_21906298/TestCases.xlsx
 ```
 The spreadsheet documents 71 test cases across the following feature areas:
 
@@ -115,9 +115,9 @@ To reproduce: install Snyk CLI, set `$env:SNYK_TOKEN`, then run `snyk test` from
 ## 3. Defect Report
 
 **File:** `Defect_Report.docx`  
-**Location:** 
+**Location:**
 ```
-Yunwei_Long_21906298/TestCases.xlsx
+Yunwei_Long_21906298/Defect_Report.docx
 ```
 
 The report contains two sections:
@@ -133,6 +133,33 @@ The report contains two sections:
 | Major | 12 | PB_D001, PB_D002, BK_D003, SEC_D002, UI_D001, UI_D003, UI_D004, UI_D005, UI_D006, UI_D007, PR_D001, PR_D002 |
 | Minor | 2 | TC_D001, BK_D002 |
 | Trivial | 1 | UI_D002 |
+
+---
+
+## 4. Postman Collection
+
+**File:** `Scoops2Go Test Suite.postman_collection.json`  
+**Location:**
+```
+Yunwei_Long_21906298/Scoops2Go Test Suite.postman_collection.json
+```
+
+The collection covers API-level performance and security tests organised into three folders:
+
+| Folder | Test IDs Covered | Description |
+|--------|-----------------|-------------|
+| Performance | PERF_TC_004, PERF_TC_005 | Response time validation for order and checkout endpoints |
+| Security | SEC_TC_002, SEC_TC_003 | Unauthorised access and input validation checks |
+| Order API | BK_TC_010, BK_TC_015 | Order creation and status retrieval |
+
+### How to import and run
+
+1. Open Postman and click **Import**
+2. Select `Scoops2Go Test Suite.postman_collection.json`
+3. Ensure the Scoops2Go API is running locally on `http://localhost:8080`
+4. Click **Run collection** to execute all requests and view test results
+
+> **Tool version:** Postman v11.92.0 (x64, Windows 11)
 
 ---
 
@@ -152,6 +179,7 @@ scoops2go-main/
 │   │           └── testdata/
 │   │               └── products.csv   ← External test data (parameterised tests)
 │   └── snyk-sca-results.txt    ← SCA security scan output
+│   └── lighthouse-report.pdf   ← lighthouse scan output
 ├── app/                        ← Vue.js frontend
 └── README.md
 ```
