@@ -17,7 +17,6 @@ import static org.mockito.Mockito.mock;
 
 class OrderServiceValidationTests {
 
-    // ── 内部子类：暴露 protected 验证方法 ────────────────────
     static class TestableOrderService extends OrderService {
         public TestableOrderService(OrderRepository r, ProductRepository p, PaymentGateway g) {
             super(r, p, g);
