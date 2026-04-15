@@ -144,6 +144,23 @@ The report contains two sections:
 Yunwei_Long_21906298/Scoops2Go Test Suite.postman_collection.json
 ```
 
+## 5. Continuous Integration (CI)
+Continuous Integration is implemented using GitHub Actions to automate the build, test, and quality assurance process.
+
+The CI pipeline is triggered automatically on every push and pull request to the repository, and performs the following tasks:
+1. Checkout the latest code
+2. Set up JDK 23 and Maven 3.x
+3. Build the project and resolve dependencies
+4. Execute all automated tests (API, service, UI, performance, security)
+5. Generate JaCoCo test coverage report
+6. Run Snyk SCA security scan
+7. Publish test results and build status
+
+CI configuration file:
+```
+.github/workflows/ci.yml
+```
+
 The collection covers API-level performance and security tests organised into three folders:
 
 | Folder | Test IDs Covered | Description |
